@@ -11,9 +11,6 @@ using namespace std;
 class Titanic{
     private:
         void split(string str, char separator, string *strings);
-        void histogram(vector<float> fares,
-                       vector<float> &fareHistoProbs,
-                       vector<float> &fareHistoVals);
         int contingency[3][7]={};
         vector<Passager> passagers;
     public:

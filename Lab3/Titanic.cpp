@@ -34,22 +34,23 @@ Passager Titanic::createPassager(string rawPassager){
 
 void Titanic::split(string text, char separator, string *strings){  
     int currIndex = 0, i = 0, startIndex = 0, endIndex = 0;
+    string subStr = "";  
     while (i <= text.length()){  
         if (text[i] == separator || i == text.length()){  
             endIndex = i;
-            string subStr = "";  
+            subStr = "";  
             subStr.append(text, startIndex, endIndex - startIndex);  
             strings[currIndex] = subStr;
             startIndex = endIndex + 1;
-            currIndex++;
-        }  
-        i++;  
+            currIndex = currIndex + 1;
+        }
+        i = i+1;
     }
 }
 
 void Titanic::printPassager(){
     for (Passager p: this->passagers){
-        cout << "Passager " << p.getSex() << endl;
+        cout << "Passager " << p.getName() << endl;
     }
 }
 
@@ -93,31 +94,38 @@ void Titanic::createContingencyTable(){
     // not_survived |_______|_______|_______|_________|_________|_________|_____
     // total        |_______|_______|_______|_________|_________|_________|_____
     //
+    int count=0;
     for (Passager p: this->passagers){
         if (!(p.getSex()).compare("male")){
             switch (p.getPassagerClass()){
                 case 1:
-                    this->contingency[2][0]++;
-                    if (p.getSurvived()) this->contingency[0][0]++;
+                    this->contingency[2][0] += 1;
+                    if (p.getSurvived()) this->contingency[0][0] += 1;
+                    break;
                 case 2:
                     this->contingency[2][1]++;
-                    if (p.getSurvived()) this->contingency[0][1]++;
+                    if (p.getSurvived()) this->contingency[0][1] += 1;
+                    break;
                 case 3:
                     this->contingency[2][2]++;
-                    if (p.getSurvived()) this->contingency[0][2]++;
-                }
+                    if (p.getSurvived()) this->contingency[0][2] += 1;
+                    break;
+            }
         }
         else{
             switch (p.getPassagerClass()){
                 case 1:
                     this->contingency[2][3]++;
                     if (p.getSurvived()) this->contingency[0][3]++;
+                    break;
                 case 2:
                     this->contingency[2][4]++;
                     if (p.getSurvived()) this->contingency[0][4]++;
+                    break;
                 case 3:
                     this->contingency[2][5]++;
                     if (p.getSurvived()) this->contingency[0][5]++;
+                    break;
             }
         }
     }
@@ -134,75 +142,42 @@ float Titanic::survivalGivenSexClass(string passSex, int passClass, bool survive
     passClass--;
     int column = sex + passClass;
     int row = (survived ? 0 : 1);
-    float num = static_cast< float >(this->contingency[row][column]);
-    float den = static_cast< float >(this->contingency[2][column]);
-    return num/den;
+    return (contingency[row][column])/(float)(contingency[2][column]);
 }
 
 float Titanic::survivalGivenAgeClassFrequentist(int passAge, int passClass, bool survived){
-    float less10Survived, less10 = 0; 
+    int less10Survived = 0, less10 = 0; 
     for (Passager p: this->passagers){
         if ((p.getAge() <= passAge) && (p.getPassagerClass() == passClass)){
             if (p.getSurvived()){
-                less10Survived++;
+                less10Survived = less10Survived + 1;
             }
-            less10++;
+            less10 = less10 +1;
         }
     }
-    return less10Survived/less10;
+    return less10Survived/(float)(less10);
 }
-
 
 float Titanic::survivalGivenAgeClassBayesian(int passAge, int passClass, bool survived){
     // Given a uniform (not informative) prior:
-    float alpha, beta = 1;
+    int alpha = 1, beta = 1;
     for (Passager p: this->passagers){
         if ((p.getAge() <= passAge) && (p.getPassagerClass() == passClass)){
-            alpha += static_cast< float > (p.getSurvived());
-            beta = beta - static_cast< float > (p.getSurvived()) + 1;
+            alpha = alpha + (float)(p.getSurvived());
+            beta = beta - (float)(p.getSurvived()) + 1;
         }
     }
-    return alpha / (alpha + beta);
-}
-
-void Titanic::histogram(vector<float> fares,
-                        vector<float> &fareHistoProbs,
-                        vector<float> &fareHistoVals){
-    sort(fares.begin(), fares.end());
-    float arrSize = static_cast<float> (fares.size());
-    int histIndex = 0;
-    int i=0;
-    while (i<arrSize){
-        float counter = 1.;
-        for (int j=1; j<arrSize; j++){
-            if (fares[i+j] == fares[i]){
-                counter++;
-            }
-        }
-        i += static_cast<int> (counter);
-        // don't consider outliers
-        if ((0.5<fares[i]) && (fares[i]<100)){
-            fareHistoProbs.push_back(counter/arrSize);
-            fareHistoVals.push_back(fares[i]);
-            histIndex++;
-        }
-    }
+    return alpha / (float)(alpha + beta);
 }
 
 float Titanic::expectation(int passClass){
-    vector<float> fares={};
-    vector<float> fareHistoProbs={};
-    vector<float> fareHistoVals={};
+    int count = 0;
+    float sum = 0;
     for (Passager p: this->passagers){
         if (p.getPassagerClass() == passClass){
-            fares.push_back(p.getPaid());
+            sum += p.getPaid();
+            count++;
         }
     }
-    histogram(fares, fareHistoProbs, fareHistoVals);
-    float faresExpectation = 0.;
-    for (int i=0; i<fareHistoVals.size(); i++){
-        faresExpectation += fareHistoVals[i] * fareHistoProbs[i];
-    }
-
-    return faresExpectation;
+    return sum/(float)count;
 }
