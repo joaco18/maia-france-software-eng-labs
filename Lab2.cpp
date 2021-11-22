@@ -60,8 +60,6 @@ string vigenereDesipher(string text, string direction, string key){
     return vigenereCipher(text, (direction.compare("R")==0 ? "L" : "R"), key);
 }
 
-// REHACER EL TEST
-
 void test_encription(string result, string expected_result){
     bool test_passed = !(result).compare(expected_result);
     cout << "The test " << (test_passed ? "passed! :)" : "didnt passed :(") << endl;  
