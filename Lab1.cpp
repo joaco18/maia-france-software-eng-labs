@@ -81,6 +81,7 @@ void monoDimMatrix(int row, int column, float **matrix, float *monoMatrix){
 
 void fillMatrix(float **matrix, int row, int column){
     // Gets values to fill the matrix from the user
+    string line = "";
     cout << "Let's enter the matrix! :)" << endl;
     for (int i=0; i < row; i++){
         cout << "Please enter the data for the " << i << " row. "
