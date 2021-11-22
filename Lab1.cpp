@@ -2,7 +2,7 @@
     Software Engineering
     16 November 2021
     Joaquin Seia
-    Emily Caravajal
+    Emily Carvajal
 
     Task:
     Array and Matrix
