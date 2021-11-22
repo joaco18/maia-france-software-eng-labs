@@ -2,7 +2,6 @@
 #include "Titanic.h"
 #include <string>
 
-
 using namespace std;
 
 int main(){
@@ -19,7 +18,7 @@ int main(){
     titanic.createContingencyTable();
     titanic.printContingencyMatrix();
     
-    cout << endl << "The reqquested probabilities are: " << endl;
+    cout << endl << "The requested probabilities are: " << endl;
     cout << endl;
     
     cout << "P(S= true | G=female,C=1): "
@@ -42,23 +41,14 @@ int main(){
          << "kid in 3rd class and survive:" << endl;
     cout << "P(S= true | A<=10,C=3): " 
          << titanic.survivalGivenAgeClassFrequentist(10, 3, true) << endl;
-    
     // BAYESIAN APROACH:
     cout << endl << "Bayesian aproach to get the probability of being a "
          << "kid in 3rd class and survive:" << endl;
     cout << "P(S= true | A<=10,C=3): " 
          << titanic.survivalGivenAgeClassBayesian(10, 3, true) << endl;
 
-    // Problem 4: You can express your answer as a parameterized distribution.
-    //            How much did people pay to be on the ship? Calculate the 
+    // Problem 4: How much did people pay to be on the ship? Calculate the 
     //            expectation of fare conditioned on passenger-class:
-    // To express the expected value as a parametrized distribution we need to
-    // know the distribution that the data has. By visual exploration the variable
-    // fare could have a gamma distribution. The mean of a r.v. with that
-    // distribution is alpha/lambda (being those it's two parameters). If we follow
-    // a Bayesian aproach we could get the a posteriori values for alpha and lambda
-    // but this is not a trivial function as in the previous case. We decide just
-    // to use the expectation formula
 
     cout << endl << "Fare expectation for first class:" << endl;
     cout << "E[X|C1]= " << titanic.expectation(1) << endl;
